@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: email-service
+
+  kafka:
+    bootstrap-servers: kafka:9092
+
+    consumer:
+      group-id: email-service-group
+      auto-offset-reset: earliest
+
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      properties:
+        spring.json.trusted.packages: "com.abj.email_service.event"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: "com.abj.email_service.event.UserCreatedEvent"
+
+  mail:
+    host: smtp-relay.brevo.com
+    port: 587
+    username: b6ef97001@smtp-brevo.com
+    password: xsmtpsib-8b2be2767d3f6cde3cbd72ddf3023f7cb6c36e51925cc2f20a6dca505212e747-WfbzIzvsiJSzBROF
+
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: 9003
+  forward-headers-strategy: framework
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always
+
+  metrics:
+    tags:
+      application: ${spring.application.name}
